@@ -1,3 +1,5 @@
+// import { utils } from "stylelint";
+
 /* eslint-disable no-unused-vars */
 /* global Handlebars, utils, dataSource */ // eslint-disable-line no-unused-vars
 
@@ -152,6 +154,7 @@
       thisProduct.cartButton.addEventListener('click', function(event){
         event.preventDefault();
         thisProduct.processOrder();
+        thisProduct.addToCart();
       });
 
     }
@@ -165,22 +168,34 @@
     processOrder(){
       const thisProduct = this;
       const formData = utils.serializeFormToObject(thisProduct.form);
+      thisProduct.params = {};
       // console.log('formData', formData);
       let price = thisProduct.data.price;
       // console.log(thisProduct.data.params);
-      for(let param in formData){
+      for(let paramID in thisProduct.data.params){
+        const param = thisProduct.data.params[paramID];
 
-        if(thisProduct.data.params &&  thisProduct.data.params[param] && thisProduct.data.params[param].options){
-          for(let option in thisProduct.data.params[param].options){
-            const isSelected = formData[param].includes(option);
+        if(thisProduct.data.params &&  thisProduct.data.params[paramID] && thisProduct.data.params[paramID].options){
+          for(let optionID in thisProduct.data.params[paramID].options){
+            const option = param.options[optionID];
+            const isSelected = formData[paramID].includes(optionID);
 
-            const optionInfo = thisProduct.data.params[param].options[option];
+            const optionInfo = thisProduct.data.params[paramID].options[optionID];
             if(isSelected && !optionInfo.default) price += optionInfo.price;
             else if(optionInfo.default && !isSelected) price -= optionInfo.price;
 
-            const allImages = thisProduct.imageWrapper.querySelectorAll(`.${param}-${option}`);
+            const allImages = thisProduct.imageWrapper.querySelectorAll(`.${paramID}-${optionID}`);
             // console.log(allImages);
             if(isSelected){
+
+              if(!thisProduct.params[paramID]){
+                thisProduct.params[paramID] = {
+                  label: param.label,
+                  options: {},
+                };
+              }
+              thisProduct.params[paramID].options[option] = option.label;
+
               for(let image of allImages){
                 image.classList.add(classNames.menuProduct.imageVisible);}
             }else{
@@ -189,11 +204,23 @@
               }
             }
           }
+
         }
 
       }
-      price *= thisProduct.amountWidget.value;
-      thisProduct.priceElem.innerHTML = price;
+      thisProduct.priceSingle = price;
+      thisProduct.price = thisProduct.priceSingle * thisProduct.amountWidget.value;
+
+      thisProduct.priceElem.innerHTML = thisProduct.price;
+
+    }
+
+    addToCart(){
+      const thisProduct = this;
+
+      thisProduct.name = thisProduct.data.name;
+      thisProduct.amount = thisProduct.amountWidget.value;
+      app.cart.add(thisProduct);
 
     }
   }
@@ -270,6 +297,7 @@
 
       thisCart.dom.wrapper = element;
       thisCart.dom.toggleTrigger = thisCart.dom.wrapper.querySelector(select.cart.toggleTrigger);
+      thisCart.dom.productList = document.querySelector(select.containerOf.cart);
     }
 
     initActions(){
@@ -278,7 +306,20 @@
       thisCart.dom.toggleTrigger.addEventListener('click', ()=>{
         thisCart.dom.wrapper.classList.toggle(classNames.cart.wrapperActive);
       });
+    }
 
+    add(menuProduct){
+      const thisCart = this;
+
+      // const generatedHTML = templates.menuProduct(thisProduct.data);
+      // thisProduct.element = utils.createDOMFromHTML(generatedHTML);
+      // const menuContainer = document.querySelector(select.containerOf.menu);
+      // menuContainer.appendChild(thisProduct.element);
+
+      const generatedHTML = templates.cartProduct(menuProduct);
+      let generatedDom = utils.createDOMFromHTML(generatedHTML);
+      thisCart.dom.productList.append(generatedDom);
+      console.log('adding prodcut', menuProduct);
     }
   }
 
