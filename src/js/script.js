@@ -198,8 +198,9 @@
                   label: param.label,
                   options: {},
                 };
+                console.log(thisProduct.params[paramID]);
               }
-              thisProduct.params[paramID].options[option] = option.label;
+              thisProduct.params[paramID].options[optionID] = option.label;
 
               for(let image of allImages){
                 image.classList.add(classNames.menuProduct.imageVisible);}
