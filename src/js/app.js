@@ -9,7 +9,7 @@ const app = {
 
   initMenu: function(){
     const thisApp = this;
-    console.log('thisApp.data', thisApp.data);
+    // console.log('thisApp.data', thisApp.data);
 
     for(let productData in thisApp.data.products) {
       new Product(thisApp.data.products[productData].id, thisApp.data.products[productData]);
@@ -24,13 +24,13 @@ const app = {
         return rawResponse.json();
       })
       .then(function(parsedResponse){
-        console.log('parsedResponse', parsedResponse);
+        // console.log('parsedResponse', parsedResponse);
 
         thisApp.data.products = parsedResponse;
         thisApp.initMenu();
 
       });
-    console.log('thisApp.data', JSON.stringify(thisApp.data));
+    // console.log('thisApp.data', JSON.stringify(thisApp.data));
 
   },
 
@@ -66,9 +66,9 @@ const app = {
       link.addEventListener('click', function(event) {
         const clickedElement = this;
         event.preventDefault;
-        console.log(clickedElement);
+        // console.log(clickedElement);
         const ID = clickedElement.getAttribute('href').replace(/#/,'');
-        console.log(ID);
+        // console.log(ID);
 
         thisApp.activatePage(ID);
       });
@@ -82,7 +82,7 @@ const app = {
     }
 
     for(let page of thisApp.pages){
-      console.log(page);
+      // console.log(page);
       page.classList.toggle(classNames.pages.active, page.getAttribute('id') == pageId);
     }
 

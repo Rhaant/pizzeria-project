@@ -106,7 +106,7 @@ export class Product{
                 label: param.label,
                 options: {},
               };
-              console.log(thisProduct.params[paramID]);
+              // console.log(thisProduct.params[paramID]);
             }
             thisProduct.params[paramID].options[optionID] = option.label;
 
