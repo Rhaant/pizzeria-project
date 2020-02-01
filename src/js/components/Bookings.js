@@ -4,6 +4,7 @@ import { AmountWidget } from './AmountWidget.js';
 import { DatePicker } from './DatePickr.js';
 import { HourPicker } from './HourPicker.js';
 
+
 export class Booking{
 
   constructor(element){
@@ -83,17 +84,38 @@ export class Booking{
     console.log(eventsCurrent);
     for(let currentEvent in eventsCurrent){
       let event = eventsCurrent[currentEvent];
-      thisBooking.makeBooked(event.date, event.hour, event.duration, event.table);
+      thisBooking.makeBooked(event.date, utils.hourToNumber(event.hour), event.duration, event.table);
       console.log(eventsCurrent[currentEvent].date);
+    }
+    for(let currentEvent in bookings) {
+      let event = bookings[currentEvent];
+      thisBooking.makeBooked(event.date, utils.hourToNumber(event.hour), event.duration, event.table);
+    }
+    for(let currentEvent in eventsRepeat){
+      let event = eventsRepeat[currentEvent];
+      thisBooking.makeBooked(event.date, utils.hourToNumber(event.hour), event.duration, event.table);
+      let maxDate = Date.parse(thisBooking.datePicker.maxDate);
+      let currentDate = Date.parse(event.date);
+      const singleDay = 24*60*60*1000;
+      console.log('maxDate:', maxDate, 'currentDate: ', currentDate, 'singleDay:', singleDay);
+      for(let date = currentDate; date <= maxDate; date += singleDay){
+        event.date = utils.dateToStr(new Date(date));
+        thisBooking.makeBooked(event.date, utils.hourToNumber(event.hour), event.duration, event.table);
+      }
     }
   }
   makeBooked(date, hour, duration, table){
     const thisBooking = this;
 
-    thisBooking.booked.push( date = {
-      hour: table,
-    });
-    console.log(date, hour, duration, table);
+    if (!thisBooking.booked[date]) thisBooking.booked[date]= {};
+    let startHour = hour;
+    let endHour = hour + duration;
+    const i = 0.5;
+    for(let presentHour = startHour; presentHour < endHour; presentHour += i ){
+      if (!thisBooking.booked[date][presentHour]) thisBooking.booked[date][presentHour] = [];
+      if(!thisBooking.booked[date][presentHour].includes(table)) thisBooking.booked[date][presentHour].push(table);
+    }
+    console.log(thisBooking.booked);
   }
 
 }
