@@ -20,6 +20,8 @@ export class DatePicker extends BaseWidget{
       defaultDate: thisWidget.minDate,
       minDate: thisWidget.minDate,
       maxDate: thisWidget.maxDate,
+      altFormat: 'F j, Y',
+      dateFormat: 'Y-m-d',
       disable: [
         function(date) {
           return (date.getDay() === 1);}
@@ -29,6 +31,8 @@ export class DatePicker extends BaseWidget{
       },
       onChange: (dateStr)=> {
         thisWidget.value = dateStr;
+        thisWidget.value = thisWidget.dom.input.value;
+        // console.log(thisWidget.dom.input.value);
       }
     });
 

@@ -1,4 +1,4 @@
-import { templates, select, settings } from '../settings.js';
+import { templates, select, settings, classNames } from '../settings.js';
 import { utils } from '../utils.js';
 import { AmountWidget } from './AmountWidget.js';
 import { DatePicker } from './DatePickr.js';
@@ -26,8 +26,7 @@ export class Booking{
     thisBooking.dom.hoursAmount = thisBooking.dom.wrapper.querySelector(select.booking.hoursAmount);
     thisBooking.dom.datePicker = thisBooking.dom.wrapper.querySelector(select.widgets.datePicker.wrapper);
     thisBooking.dom.hourPicker = thisBooking.dom.wrapper.querySelector(select.widgets.hourPicker.wrapper);
-    console.log(thisBooking.dom.peopleAmount);
-
+    thisBooking.dom.tables = thisBooking.element.querySelectorAll(select.booking.tables);
   }
 
   initWidgets(){
@@ -36,6 +35,7 @@ export class Booking{
     thisBooking.hoursAmount = new AmountWidget(thisBooking.dom.hoursAmount);
     thisBooking.datePicker = new DatePicker(thisBooking.dom.datePicker);
     thisBooking.hourPicker = new HourPicker(thisBooking.dom.hourPicker);
+    thisBooking.element.addEventListener('updated', ()=>{thisBooking.updatedDom();});
   }
   getData(){
     const thisBooking = this;
@@ -85,10 +85,12 @@ export class Booking{
     for(let currentEvent in eventsCurrent){
       let event = eventsCurrent[currentEvent];
       thisBooking.makeBooked(event.date, utils.hourToNumber(event.hour), event.duration, event.table);
+      console.log(event.date);
       console.log(eventsCurrent[currentEvent].date);
     }
     for(let currentEvent in bookings) {
       let event = bookings[currentEvent];
+      console.log(event.date);
       thisBooking.makeBooked(event.date, utils.hourToNumber(event.hour), event.duration, event.table);
     }
     for(let currentEvent in eventsRepeat){
@@ -99,10 +101,13 @@ export class Booking{
       const singleDay = 24*60*60*1000;
       console.log('maxDate:', maxDate, 'currentDate: ', currentDate, 'singleDay:', singleDay);
       for(let date = currentDate; date <= maxDate; date += singleDay){
-        event.date = utils.dateToStr(new Date(date));
-        thisBooking.makeBooked(event.date, utils.hourToNumber(event.hour), event.duration, event.table);
+        event.date = new Date(date);
+        let newDate = utils.dateToStr(event.date);
+        console.log(newDate);
+        thisBooking.makeBooked(newDate, utils.hourToNumber(event.hour), event.duration, event.table);
       }
     }
+    thisBooking.updatedDom();
   }
   makeBooked(date, hour, duration, table){
     const thisBooking = this;
@@ -115,7 +120,25 @@ export class Booking{
       if (!thisBooking.booked[date][presentHour]) thisBooking.booked[date][presentHour] = [];
       if(!thisBooking.booked[date][presentHour].includes(table)) thisBooking.booked[date][presentHour].push(table);
     }
-    console.log(thisBooking.booked);
+    // console.log(thisBooking.booked);
+  }
+  updatedDom(){
+    const thisBooking = this;
+    thisBooking.date = thisBooking.datePicker.value;
+    thisBooking.hour = utils.hourToNumber(thisBooking.hourPicker.value);
+    console.log(thisBooking.date);
+    for(let table of thisBooking.dom.tables){
+      let tableID = parseInt(table.getAttribute(settings.booking.tableIdAttribute));
+      let newArray = thisBooking.booked[thisBooking.date][thisBooking.hour];
+      console.log(thisBooking.booked[thisBooking.date]);
+      console.log(newArray, parseInt(tableID));
+      if(thisBooking.booked[thisBooking.date] && thisBooking.booked[thisBooking.date][thisBooking.hour]  && newArray.includes(tableID)){
+        console.log('teraz');
+        table.classList.add(classNames.booking.tableBooked);
+      }else table.classList.remove(classNames.booking.tableBooked);
+
+    }
+
   }
 
 }
