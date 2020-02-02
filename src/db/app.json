@@ -206,10 +206,10 @@
   "event": [
     {
       "id": 1,
-      "date": "2020-02-01",
+      "date": "2020-02-02",
       "hour": "12:30",
       "table": 1,
-      "repeat": false,
+      "repeat": "daily",
       "duration": 4,
       "ppl": 3,
       "starters": []
@@ -246,7 +246,7 @@
     },
     {
       "id": 5,
-      "date": "2020-02-03",
+      "date": "2020-02-09",
       "hour": "15:00",
       "table": 2,
       "repeat": "daily",

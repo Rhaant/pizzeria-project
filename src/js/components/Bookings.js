@@ -106,18 +106,19 @@ export class Booking{
     }
     for(let currentEvent in eventsRepeat){
       let event = eventsRepeat[currentEvent];
-      thisBooking.makeBooked(event.date, utils.hourToNumber(event.hour), event.duration, event.table);
+      // thisBooking.makeBooked(event.date, utils.hourToNumber(event.hour), event.duration, event.table);
       let maxDate = Date.parse(thisBooking.datePicker.maxDate);
       let currentDate = Date.parse(event.date);
       const singleDay = 24*60*60*1000;
       // console.log('maxDate:', maxDate, 'currentDate: ', currentDate, 'singleDay:', singleDay);
-      for(let date = currentDate; date <= maxDate; date += singleDay){
-        event.date = new Date(date);
+      for(let eventDate = currentDate; eventDate <= maxDate; eventDate += singleDay){
+        event.date = new Date(eventDate);
         let newDate = utils.dateToStr(event.date);
-        // console.log(newDate);
+        console.log(newDate, utils.hourToNumber(event.hour), event.duration, event.table);
         thisBooking.makeBooked(newDate, utils.hourToNumber(event.hour), event.duration, event.table);
       }
     }
+    console.log(thisBooking.booked);
     thisBooking.updatedDom();
   }
   makeBooked(date, hour, duration, table){
