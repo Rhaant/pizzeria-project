@@ -25,6 +25,7 @@ export class Cart{
     thisCart.dom.form = thisCart.dom.wrapper.querySelector(select.cart.form);
     thisCart.dom.phone = thisCart.dom.wrapper.querySelector(select.cart.phone);
     thisCart.dom.address = thisCart.dom.wrapper.querySelector(select.cart.address);
+    console.log(thisCart.dom.form);
 
 
     for(let key of thisCart.renderTotalsKeys){
@@ -122,7 +123,6 @@ export class Cart{
       }).then(function(parsedResponse){
         console.log('parsedResponse', parsedResponse);
       });
-    console.log(thisCart.dom.phone);
   }
 
 }
