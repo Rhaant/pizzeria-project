@@ -114,7 +114,7 @@ export class Booking{
       for(let eventDate = currentDate; eventDate <= maxDate; eventDate += singleDay){
         event.date = new Date(eventDate);
         let newDate = utils.dateToStr(event.date);
-        console.log(newDate, utils.hourToNumber(event.hour), event.duration, event.table);
+        // console.log(newDate, utils.hourToNumber(event.hour), event.duration, event.table);
         thisBooking.makeBooked(newDate, utils.hourToNumber(event.hour), event.duration, event.table);
       }
     }
@@ -195,9 +195,10 @@ export class Booking{
         return response.json();
       }).then(function(parsedResponse){
         console.log('parsedResponse', parsedResponse);
+        thisBooking.getData();
       });
     console.log(payload);
-    thisBooking.getData();
+
 
   }
 

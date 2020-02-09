@@ -3,6 +3,7 @@ import {Product} from './components/Product.js';
 import {Cart} from './components/Cart.js';
 import {select, settings, classNames} from './settings.js';
 import {Booking} from './components/Bookings.js';
+import {slider} from './components/slider.js';
 /* eslint-disable no-unused-vars */
 /* global Handlebars, utils, dataSource */ // eslint-disable-line no-unused-vars
 const app = {
@@ -51,6 +52,9 @@ const app = {
 
     thisApp.pages = Array.from(document.querySelector(select.containerOf.pages).children);
     thisApp.navLinks = Array.from(document.querySelectorAll(select.nav.links));
+    thisApp.homeLinks = Array.from(document.querySelectorAll('.nav-options a'));
+    console.log(thisApp.pages, thisApp.navLinks);
+    console.log(thisApp.homeLinks);
 
     let pagesMatchingHash = [];
     if(window.location.hash.length > 2){
@@ -61,6 +65,20 @@ const app = {
       });
     }
     thisApp.activatePage(pagesMatchingHash.length ? pagesMatchingHash[0].id : thisApp.pages[0].id);
+
+    for(let link of thisApp.homeLinks){
+      link.addEventListener('click', function(event) {
+        const clickedElement = this;
+        event.preventDefault();
+        const ID = clickedElement.getAttribute('href').replace(/#/,'');
+        console.log(ID);
+        thisApp.activatePage(ID);
+        for(let link of thisApp.navLinks){
+          link.style.display = 'flex';
+        }
+      });
+    }
+
 
     for(let link of thisApp.navLinks){
       link.addEventListener('click', function(event) {
@@ -73,6 +91,15 @@ const app = {
         thisApp.activatePage(ID);
       });
     }
+    if(window.location.hash == '#/home'){
+      let buttonsToHide = document.querySelectorAll('.main-nav a');
+      console.log(buttonsToHide);
+      for(let button of buttonsToHide){
+        button.style.display = 'none';
+      }
+    }
+
+
   },
 
   activatePage: function(pageId){
@@ -107,6 +134,7 @@ const app = {
     thisApp.initData();
     thisApp.initCart();
     thisApp.initBooking();
+    slider();
 
   },
 };
