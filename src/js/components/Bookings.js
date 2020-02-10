@@ -88,6 +88,9 @@ export class Booking{
       .then(function([bookings, eventsCurrent, eventsRepeat]){
         thisBooking.parseData(bookings, eventsCurrent, eventsRepeat);
       });
+
+
+    thisBooking.dom.picker = thisBooking.dom.wrapper.querySelector('.rangeSlider');
   }
   parseData(bookings, eventsCurrent, eventsRepeat){
     const thisBooking = this;
@@ -118,8 +121,6 @@ export class Booking{
         thisBooking.makeBooked(newDate, utils.hourToNumber(event.hour), event.duration, event.table);
       }
     }
-    console.log(thisBooking.booked);
-    thisBooking.updatedDom();
   }
   makeBooked(date, hour, duration, table){
     const thisBooking = this;
@@ -132,7 +133,6 @@ export class Booking{
       if (!thisBooking.booked[date][presentHour]) thisBooking.booked[date][presentHour] = [];
       if(!thisBooking.booked[date][presentHour].includes(table)) thisBooking.booked[date][presentHour].push(table);
     }
-    // console.log(thisBooking.booked);
   }
   updatedDom(){
     const thisBooking = this;
@@ -162,8 +162,8 @@ export class Booking{
         thisBooking.selectedTable = selectedTables[0].getAttribute('data-table');
         console.log(selectedTables[0].getAttribute('data-table'));
       });
-
     }
+    thisBooking.setBackground();
   }
   sendBooking(){
     const thisBooking = this;
@@ -198,8 +198,24 @@ export class Booking{
         thisBooking.getData();
       });
     console.log(payload);
-
-
   }
+  setBackground(){
+    const thisBooking = this;
 
+    thisBooking.dom.picker = thisBooking.dom.wrapper.querySelector('.rangeSlider');
+    thisBooking.dom.pickerFill = thisBooking.dom.wrapper.querySelector('.rangeSlider__fill');
+    let color = '';
+    for (let i = 12; i< 24; i += 0.5){
+      if(!thisBooking.booked[thisBooking.date][i] || thisBooking.booked[thisBooking.date][i].length == 1){
+        console.log(thisBooking.date);
+        color += ',green';
+      }else if(thisBooking.booked[thisBooking.date][i].length == 2){
+        color += ',orange';
+      }else color += ',red';
+    }
+    const newColor = `linear-gradient(to right ${color})`;
+    thisBooking.dom.picker.style.background = newColor;
+    thisBooking.dom.pickerFill.style.background = 'none';
+    console.log(thisBooking.booked);
+  }
 }
